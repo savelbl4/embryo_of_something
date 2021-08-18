@@ -1,0 +1,165 @@
+﻿body {
+	margin: 10px;
+	background:#116062;
+	color: #116062;
+	font-family: Calibri, Trebuchet MS, Arial, Times New Roman;
+	font-size: 12pt;
+}
+hr {
+	background: linear-gradient(90deg, #bef574, #116062, #bef574);
+	border:0;
+	height:1px;
+	margin: 0;
+}
+h2, h4, h3, h6{
+	font-style: italic;
+}
+h6 {
+	text-align: right; /* Выравнивание по краю */
+	margin-top: 0;
+	margin-bottom: 16px;
+	padding-bottom: 16px;
+	font-family: monospace;
+}
+h3{
+	text-align: center;
+	margin-bottom: 0;
+} 
+#container {
+	background: #bef574;
+	border-radius: 15px;
+	margin: auto;
+	width: 900px;
+}
+#navigation {
+	padding-top: 5px;
+	margin: auto;
+	text-align: center;
+}
+#cont1 {
+	float: left;
+	width: 70%;
+	padding: 0;
+	margin: 0;
+}
+#cont2 {
+	float: right;
+	width: 30%;
+	margin: 0;
+	padding: 0;
+}
+#incont {
+	margin: 20px;
+} 
+#clear {
+	clear:both;
+} 
+#service {
+	border-radius: 15px;
+	margin: 0px 20px 0px 20px;
+}
+#footer {
+	width: 760px;
+	height: 40px;
+	margin: 20px;
+}
+ul {
+	margin: 0;
+	padding: 0;
+}
+ul.sp {
+	list-style-type: circle;
+}
+ul.sp li {
+	display: block; /* Отображать как строчный элемент */
+}
+ul.sp li:hover {
+		background: #116062;
+	color: #116062;
+		border-radius: 100%; /* Радиус скругления */
+}
+ul.hr li {
+	display: inline-block; /* Отображать как строчный элемент */
+}
+ul.hr li:hover {
+		background: #116062;
+	color: #116062;
+		border-radius: 100%; /* Радиус скругления */
+}
+a.top {
+	color: #116062; /* Цвет ссылок */
+		display: block; /* Блочный элемент */
+		padding: 0px 7px ; /* Поля вокруг текста */
+		text-decoration: none; /* Убираем подчёркивание */
+		font-size: 14pt;
+}
+a.top:hover {
+	color: #bef574;
+}
+a {
+	color: #116062; /* Цвет ссылок */
+	text-decoration: none; /* Убираем подчёркивание */
+}
+.round {
+	border-radius: 100%; /* Радиус скругления */
+	width: 95%;
+	height: 95%;
+}
+.lol {
+	font-weight: bold;
+	font-style: italic;
+}
+/*.layer1 { 
+	float: left;  Обтекание по правому краю 
+	background: #bef574;  Цвет фона 
+	border: 1px solid black;  Параметры рамки 
+	padding: 10px;  Поля вокруг текста 
+	margin-left: 20px;  Отступ справа 
+	width: 40%;  Ширина блока
+	position: fixed;
+	top: 50%;
+	z-index: 0;
+}*/
+.lm-1 {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	padding: 0;
+	/*border-radius: 15px;*/
+	/*margin-top: auto;*/
+	/*margin-bottom: auto;*/
+	width: 100px;
+	height: 100%;
+	opacity: 1;
+}
+.lm0 {	
+	position: absolute;
+	background: #bef574;
+	padding: auto;
+	/*border-radius: 15px;*/
+	/*margin-top: auto;*/
+	/*margin-bottom: auto;*/
+	width: 100%;
+	height: 100%;
+	opacity: 1;
+	z-index: 1;
+}
+.lm1 {
+	width: 12px;  /*Ширина блока*/
+	margin: 0;
+	float: left;
+	opacity: 1;
+	z-index: 2;
+}
+.lm2 {
+	margin: 0;
+	float: right;
+	opacity: 1;
+	z-index: 2;
+}
+p {
+	/*добавляет автоматические переносы в параграфах*/
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto;
+}
