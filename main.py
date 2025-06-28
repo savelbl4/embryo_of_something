@@ -160,7 +160,7 @@ def handle_sticker(message):
         stickers.append(stickerid1)
     # print(stickerid2)
     # Здесь можешь отвечать на стикер, если хочешь
-    tb.send_sticker(chatid, lucky())
+    tb.send_message(chatid, lucky())
 
 
 def im_here():
