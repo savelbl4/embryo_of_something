@@ -75,7 +75,7 @@ def answer(message):
     # print(message.from_user.full_name)
     chatid = message.chat.id
     print(chatid)
-    print(message.text)
+    print(message)
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
