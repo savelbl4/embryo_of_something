@@ -92,9 +92,13 @@ def answer(message):
 @tb.message_handler(content_types=['sticker'])
 def handle_sticker(message):
     chatid = message.chat.id
-    stickerid = message.json.sticker.file_id
+    sticker = message.sticker
+    json_ = message.json
+    stickerid1 = sticker.get('file_id')
+    stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
-    print(stickerid)
+    print(stickerid1)
+    print(stickerid2)
     # Здесь можешь отвечать на стикер, если хочешь
     tb.send_sticker(chatid, random.choice(stickers))
 
