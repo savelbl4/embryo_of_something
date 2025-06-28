@@ -88,6 +88,14 @@ def answer(message):
                 tb.send_message(chatid, im_here())
 
 
+@tb.message_handler(content_types=['sticker'])
+def handle_sticker(message):
+    chatid = message.chat.id
+    print(f"Sticker from {chatid}")
+    print(message)
+    # Здесь можешь отвечать на стикер, если хочешь
+    tb.send_message(chatid, "Ты прислал стикер! 😎")
+
 def im_here():
     res = requests.request('get', 'https://vk.com/upload.php?act=myip')
     ros = res.text
