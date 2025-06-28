@@ -94,7 +94,7 @@ def handle_sticker(message):
     chatid = message.chat.id
     sticker = message.sticker
     json_ = message.json
-    stickerid1 = sticker.get('file_id')
+    stickerid1 = sticker.file_id
     stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
     print(stickerid1)
