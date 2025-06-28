@@ -79,7 +79,7 @@ def answer(message):
     # print(message.from_user.full_name)
     chatid = message.chat.id
     print(chatid)
-    # print(message)
+    print(message)
     if message.entities and any(e.type == "bot_command" for e in message.entities):
         if 'start' in message.text:
             tb.send_message(
