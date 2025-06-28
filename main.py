@@ -75,10 +75,13 @@ def answer(message):
     # print(message.from_user.full_name)
     chatid = message.chat.id
     print(chatid)
+    print(message.text)
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
-        elif 'федя' in message.text.lower():
+        if 'переведи' in message.text.lower():
+            await message.answer(replace(message.text.lower()))
+        if 'федя' in message.text.lower():
             if 'ты как' in message.text.lower():
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
@@ -96,7 +99,7 @@ def im_here():
 def job():
     hour = datetime.now().hour
     if 9 < int(hour) < 20:
-        tb.send_message('2501359', random.choice(stickers))
+        tb.send_sticker('2501359', random.choice(stickers))
 
 
 def send_weekend():
