@@ -1,4 +1,5 @@
 import telebot
+from telebot import types
 from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
 from datetime import datetime
 from pprint import pprint
@@ -78,10 +79,14 @@ def answer(message):
     # print(message.from_user.full_name)
     chatid = message.chat.id
     print(chatid)
-    print(message)
+    # print(message)
     if message.entities and any(e.type == "bot_command" for e in message.entities):
         if 'start' in message.text:
-            tb.send_sticker(chatid, random.choice(stickers))
+            tb.send_message(
+                chatid,
+                "Выберите действие:",
+                reply_markup=get_custom_keyboard()
+            )
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
@@ -92,6 +97,24 @@ def answer(message):
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
                 tb.send_message(chatid, im_here())
+
+
+def get_custom_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    keyboard.add(types.KeyboardButton('стикер'), types.KeyboardButton('где'))
+    return keyboard
+
+
+@tb.message_handler(func=lambda m: m.text == 'стикер')
+def handle_sticker(message):
+    chatid = message.chat.id
+    tb.send_sticker(chatid, random.choice(stickers))
+
+
+@tb.message_handler(func=lambda m: m.text == 'где')
+def handle_gde(message):
+    chatid = message.chat.id
+    tb.send_message(chatid, im_here())
 
 
 @tb.message_handler(content_types=['sticker'])
