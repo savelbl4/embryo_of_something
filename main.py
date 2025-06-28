@@ -33,6 +33,8 @@ stickers = [
     'CAACAgIAAxkBAAIS2WJEy9RFZaz3_yIEZFx7C3CU4GCZAAKZAAPLiBkRnMRwPqB1w3AjBA',
     'CAACAgEAAxkBAAIS2mJEzFzIvAKfPfFZ5KxvAnhuC-dOAAI6AAOhBQwN3srafQKK11kjBA',
     'CAACAgIAAxkBAAITwmhgFZYervsBDFWiAAGcrkOx_nUwVQACbwEAAj0N6AQ5fyi7eC6__zYE',
+    'CAACAgIAAxkBAAITumhgD2JJml586mfwZYH4oNZmaNriAAKrAQACEBptIni-vpHMVGzHNgQ',
+    'CAACAgIAAxkBAAIT7GhgHy3YeyiN2WSIR5vh6paBJ32RAAImAAN7wH0TtNsrvlEETkI2BA',
 ]
 i = {
     'А': '丹', 'Б': '石', 'В': '乃', 'Г': '厂', 'Д': '亼', 'Е': '仨', 'Ё': '仨', 'Ж': '水', 'З': '弓', 'И': '仈', 'Й': '订',
@@ -93,12 +95,13 @@ def answer(message):
 def handle_sticker(message):
     chatid = message.chat.id
     sticker = message.sticker
-    json_ = message.json
     stickerid1 = sticker.file_id
-    stickerid2 = json_.get('sticker').get('file_id')
+    # json_ = message.json
+    # stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
     print(stickerid1)
-    print(stickerid2)
+    stickers.append(stickerid1)
+    # print(stickerid2)
     # Здесь можешь отвечать на стикер, если хочешь
     tb.send_sticker(chatid, random.choice(stickers))
 
