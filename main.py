@@ -32,6 +32,7 @@ stickers = [
     'CAACAgIAAxkBAAIS2GJEy3FKEn2sF9ei9PWay-x6-wPWAAIbCQACGELuCNy5pdXzSq7IIwQ',
     'CAACAgIAAxkBAAIS2WJEy9RFZaz3_yIEZFx7C3CU4GCZAAKZAAPLiBkRnMRwPqB1w3AjBA',
     'CAACAgEAAxkBAAIS2mJEzFzIvAKfPfFZ5KxvAnhuC-dOAAI6AAOhBQwN3srafQKK11kjBA',
+    'CAACAgIAAxkBAAITwmhgFZYervsBDFWiAAGcrkOx_nUwVQACbwEAAj0N6AQ5fyi7eC6__zYE',
 ]
 i = {
     'А': '丹', 'Б': '石', 'В': '乃', 'Г': '厂', 'Д': '亼', 'Е': '仨', 'Ё': '仨', 'Ж': '水', 'З': '弓', 'И': '仈', 'Й': '订',
@@ -91,10 +92,12 @@ def answer(message):
 @tb.message_handler(content_types=['sticker'])
 def handle_sticker(message):
     chatid = message.chat.id
+    stickerid = message.json.sticker.file_id
     print(f"Sticker from {chatid}")
-    print(message)
+    print(stickerid)
     # Здесь можешь отвечать на стикер, если хочешь
-    tb.send_message(chatid, "Ты прислал стикер! 😎")
+    tb.send_sticker(chatid, random.choice(stickers))
+
 
 def im_here():
     res = requests.request('get', 'https://vk.com/upload.php?act=myip')
