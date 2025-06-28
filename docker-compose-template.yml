@@ -1,0 +1,20 @@
+#services:
+#  example_app:
+#    container_name: example_app
+#    image: ghcr.io/your_nick/example_app:latest
+#    volumes:
+#      - ~/data:/app/data
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: telegram_vk_bot
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TG_TOKEN=${TG_TOKEN}
+      - VK_TOKEN=${VK_TOKEN}
+      - VK_GROUP=${VK_GROUP}
+    volumes:
+      - .:/app

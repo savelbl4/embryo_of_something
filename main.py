@@ -9,7 +9,11 @@ import multiprocessing
 import schedule
 import time
 import random
-from secret import TG_TOKEN, VK_TOKEN, VK_GROUP
+import os
+
+TG_TOKEN = os.getenv('TG_TOKEN')
+VK_TOKEN = os.getenv('VK_TOKEN')
+VK_GROUP = os.getenv('VK_GROUP')
 
 tb = telebot.TeleBot(TG_TOKEN)
 print(f"The Bot is online (id: {tb.get_me().id})...")

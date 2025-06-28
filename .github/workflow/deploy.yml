@@ -1,0 +1,44 @@
+name: deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    name: Deploy to Remote Host
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Create docker-compose.yml with secrets
+      run: |
+        export TG_TOKEN="${{ secrets.TG_TOKEN }}"
+        export VK_TOKEN="${{ secrets.VK_TOKEN }}"
+        export VK_GROUP="${{ secrets.VK_GROUP }}"
+        envsubst < docker-compose-template.yml > docker-compose.yml
+
+    - name: Install SSH key
+      run: |
+        install -m 600 -D /dev/null ~/.ssh/id_rsa
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+
+    - name: Copy project to remote host
+      run: |
+        rsync -az --exclude '.git' ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/
+
+    - name: Build and run Docker container on remote host
+      run: |
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          cd ~/project
+          docker-compose down
+          docker-compose build
+          docker-compose up -d
+        EOF
+
+    - name: Cleanup
+      if: always()
+      run: rm -rf ~/.ssh docker-compose.yml
