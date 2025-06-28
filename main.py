@@ -84,7 +84,7 @@ def handle_qwe(message):
     chatid = message.chat.id
     tb.send_message(
         chatid,
-        # "Выберите действие:",
+        "Выберите действие:",
         reply_markup=get_custom_keyboard()
     )
 
