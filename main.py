@@ -79,6 +79,9 @@ def answer(message):
     chatid = message.chat.id
     print(chatid)
     print(message)
+    if message.entities and any(e.type == "bot_command" for e in message.entities):
+        if 'start' in message.text:
+            tb.send_sticker(chatid, random.choice(stickers))
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
@@ -104,12 +107,6 @@ def handle_sticker(message):
         stickers.append(stickerid1)
     # print(stickerid2)
     # Здесь можешь отвечать на стикер, если хочешь
-    tb.send_sticker(chatid, random.choice(stickers))
-
-
-@tb.message_handler(commands=['start'])
-def handle_qwe(message):
-    chatid = message.chat.id
     tb.send_sticker(chatid, random.choice(stickers))
 
 
