@@ -100,9 +100,16 @@ def handle_sticker(message):
     # stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
     print(stickerid1)
-    stickers.append(stickerid1)
+    if stickerid1 not in stickers:
+        stickers.append(stickerid1)
     # print(stickerid2)
     # Здесь можешь отвечать на стикер, если хочешь
+    tb.send_sticker(chatid, random.choice(stickers))
+
+
+@tb.message_handler(commands=['start'])
+def handle_qwe(message):
+    chatid = message.chat.id
     tb.send_sticker(chatid, random.choice(stickers))
 
 
