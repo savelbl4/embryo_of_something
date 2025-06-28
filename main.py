@@ -80,7 +80,7 @@ def answer(message):
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
         if 'переведи' in message.text.lower():
-            await message.answer(replace(message.text.lower()))
+            tb.send_message(replace(message.text.lower()))
         if 'федя' in message.text.lower():
             if 'ты как' in message.text.lower():
                 tb.send_sticker(chatid, random.choice(stickers))
