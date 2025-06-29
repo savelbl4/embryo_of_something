@@ -84,6 +84,7 @@ def lucky():
 
 
 def replace(string) -> str:
+    string = string.replace('переведи ', '')
     arr = []
     for name in string:
         if i.get(name.upper()):
@@ -139,7 +140,7 @@ def answer(message):
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
         if 'переведи' in message.text.lower():
-            tb.send_message(replace(message.text.lower()))
+            tb.send_message(chatid, replace(message.text.lower()))
         if 'федя' in message.text.lower():
             if 'ты как' in message.text.lower():
                 tb.send_sticker(chatid, random.choice(stickers))
