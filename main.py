@@ -172,15 +172,18 @@ def im_here():
     return f'я тут {ip_address[0]}'
 
 
-def job():
+def send_weekends():
+    day = datetime.isoweekday(datetime.today())
     hour = datetime.now().hour
+    if int(day) not in [6, 7]:
+        return
     if 9 < int(hour) < 20:
-        tb.send_sticker('2501359', random.choice(stickers))
+        tb.send_sticker(chats[0], random.choice(stickers))
 
 
-def send_weekend():
+def send_workdays():
     if datetime.isoweekday(datetime.today()) <= 5:
-        tb.send_message(chats[0], text='11:11')
+        tb.send_message(chats[0], text=replace('звери умрут'))
         # tb.send_message(chats[2], text='11:11')
 
 
@@ -202,8 +205,8 @@ def vb_listener():
 
 
 def sayer():
-    schedule.every(1).to(60).minutes.do(job)
-    schedule.every().day.at("11:11:11").do(send_weekend)
+    schedule.every(1).to(60).minutes.do(send_weekends)  # хз как это работает
+    schedule.every().day.at("11:11:11").do(send_workdays)
     while True:
         schedule.run_pending()
         time.sleep(1)
