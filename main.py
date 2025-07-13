@@ -41,6 +41,7 @@ chats = [
     '-1001348677218',
 ]
 stickers = [
+    'CAACAgIAAxkBAAIYdGh0EDnwYybZuj2qc2qamxRKQExDAAJOAAMiTA8MNM5spwKVQf42BA',
     'CAACAgIAAxkBAAIS1mJEyRXuHigJTbrBMNuof5BQdMMKAAKEAQACy4gZETK1KP8R8jW1IwQ',
     'CAACAgIAAxkBAAIS1WJEx-fd_sZy3C36hTqNE_NeVr3XAAJIHgAC6VUFGJDLIuAKbjsWIwQ',
     'CAACAgQAAxkBAAEEStdiQL17uUKsMMmyghM9jQdj9LGjmAACAwIAAvAeaiEgvmSCXjXaWSME',
@@ -104,9 +105,14 @@ def get_custom_keyboard():
 @tb.message_handler(commands=['start'])
 def handle_qwe(message):
     chatid = message.chat.id
-    tb.send_message(
+    # tb.send_message(
+    #     chatid,
+    #     "Выберите действие:",
+    #     reply_markup=get_custom_keyboard()
+    # )
+    tb.send_sticker(
         chatid,
-        "Выберите действие:",
+        stickers[0],
         reply_markup=get_custom_keyboard()
     )
 
