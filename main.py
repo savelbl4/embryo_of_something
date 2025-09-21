@@ -270,6 +270,7 @@ def handle_stats(message):
     """Обработчик команды /stats"""
     chatid = message.chat.id
     stats_message = get_server_stats()
+    print(f"отправка в чат {chat_id}: {e}")
     tb.send_message(chatid, stats_message, parse_mode='Markdown')
 
 
@@ -289,6 +290,7 @@ def send_daily_stats():
         stats_message = get_server_stats()
         for chat_id in chats:
             try:
+                print(f"Ошибка отправки в чат {chat_id}: {e}")
                 tb.send_message(chat_id, stats_message, parse_mode='Markdown')
             except Exception as e:
                 print(f"Ошибка отправки в чат {chat_id}: {e}")
