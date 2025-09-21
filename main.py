@@ -11,6 +11,8 @@ import schedule
 import time
 import random
 import os
+import psutil
+import platform
 
 TG_TOKEN = os.getenv('TG_TOKEN')
 VK_TOKEN = os.getenv('VK_TOKEN')
@@ -100,6 +102,7 @@ def get_custom_keyboard():
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(types.KeyboardButton('стикер'), types.KeyboardButton('где'))
     keyboard.row(types.KeyboardButton('мне повезёт'))
+    keyboard.row(types.KeyboardButton('статистика'))
     return keyboard
 
 
@@ -153,6 +156,9 @@ def answer(message):
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
                 tb.send_message(chatid, im_here())
+            if 'статистика' in message.text.lower():
+                stats_message = get_server_stats()
+                tb.send_message(chatid, stats_message, parse_mode='Markdown')
 
 
 @tb.message_handler(content_types=['sticker'])
@@ -212,11 +218,82 @@ def vb_listener():
 
 
 def sayer():
-    schedule.every(1).to(60).minutes.do(send_weekends)  # хз как это работает
-    schedule.every().day.at("11:11:11").do(send_workdays)
+    # schedule.every(1).to(60).minutes.do(send_weekends)  # хз как это работает
+    # schedule.every().day.at("11:11:11").do(send_workdays)
+    schedule.every().day.at("11:11:11").do(send_daily_stats)
     while True:
         schedule.run_pending()
         time.sleep(1)
+
+
+def get_server_stats():
+    """Возвращает статистику сервера в виде строки"""
+    try:
+        # CPU
+        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_count = psutil.cpu_count()
+
+        # Память
+        memory = psutil.virtual_memory()
+        memory_total = round(memory.total / (1024 ** 3), 2)
+        memory_used = round(memory.used / (1024 ** 3), 2)
+        memory_percent = memory.percent
+
+        # Диск
+        disk = psutil.disk_usage('/')
+        disk_total = round(disk.total / (1024 ** 3), 2)
+        disk_used = round(disk.used / (1024 ** 3), 2)
+        disk_percent = disk.percent
+
+        # Загрузка системы
+        boot_time = datetime.fromtimestamp(psutil.boot_time())
+        uptime = datetime.now() - boot_time
+
+        # Формируем сообщение
+        message = f"📊 *Статистика сервера*\n\n"
+        message += f"🖥️ *CPU*: {cpu_usage}% ({cpu_count} ядер)\n"
+        message += f"💾 *Память*: {memory_used}GB / {memory_total}GB ({memory_percent}%)\n"
+        message += f"💿 *Диск*: {disk_used}GB / {disk_total}GB ({disk_percent}%)\n"
+        message += f"⏰ *Аптайм*: {str(uptime).split('.')[0]}\n"
+        message += f"🖥️ *ОС*: {platform.system()} {platform.release()}\n"
+        message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+
+        return message
+
+    except Exception as e:
+        return f"❌ Ошибка получения статистики: {e}"
+
+
+# ДОБАВЛЯЕМ ОБРАБОТЧИК КОМАНДЫ /stats
+@tb.message_handler(commands=['stats'])
+def handle_stats(message):
+    """Обработчик команды /stats"""
+    chatid = message.chat.id
+    stats_message = get_server_stats()
+    tb.send_message(chatid, stats_message, parse_mode='Markdown')
+
+
+# ДОБАВЛЯЕМ ОБРАБОТЧИК ДЛЯ КНОПКИ 'статистика'
+@tb.message_handler(func=lambda m: m.text == 'статистика')
+def handle_stats_button(message):
+    """Обработчик кнопки статистики"""
+    chatid = message.chat.id
+    stats_message = get_server_stats()
+    tb.send_message(chatid, stats_message, parse_mode='Markdown')
+
+
+# ДОБАВЛЯЕМ РАСПИСАНИЕ ДЛЯ ОТПРАВКИ СТАТИСТИКИ
+def send_daily_stats():
+    """Отправка ежедневной статистики"""
+    try:
+        stats_message = get_server_stats()
+        for chat_id in chats:
+            try:
+                tb.send_message(chat_id, stats_message, parse_mode='Markdown')
+            except Exception as e:
+                print(f"Ошибка отправки в чат {chat_id}: {e}")
+    except Exception as e:
+        print(f"Ошибка формирования статистики: {e}")
 
 
 if __name__ == '__main__':
