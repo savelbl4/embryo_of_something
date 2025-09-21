@@ -80,6 +80,8 @@ async def greet(event: SimpleBotEvent):
         await event.answer(im_here())
     if 'переведи' in event.text.lower():
         await event.answer(replace(event.text.lower()))
+    if 'статистика' in event.text.lower():
+        await event.answer(get_server_stats())
 
 
 def lucky():
@@ -154,11 +156,10 @@ def handle_gde(message):
 
 @tb.message_handler(func=lambda m: True)
 def answer(message):
-    # pprint(dir(message.from_user))
-    # print(message.from_user.full_name)
     chatid = message.chat.id
-    print(chatid)
-    print(message)
+    # для дебага
+    # print(chatid)
+    # print(message)
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
@@ -267,15 +268,13 @@ def get_server_stats():
         uptime = datetime.now() - boot_time
 
         # Формируем сообщение
-        message = f"📊 *Статистика сервера*\n\n"
+        message = f"📊 *{replace('Статистика сервера'.lower())}*\n\n"
         message += f"🖥️ *CPU*: {cpu_usage}% ({cpu_count} ядер)\n"
         message += f"💾 *Память*: {memory_used}GB / {memory_total}GB ({memory_percent}%)\n"
         message += f"💿 *Диск*: {disk_used}GB / {disk_total}GB ({disk_percent}%)\n"
         message += f"⏰ *Аптайм*: {str(uptime).split('.')[0]}\n"
         message += f"🖥️ *ОС*: {platform.system()} {platform.release()}\n"
         message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-
-        print(f"отправка в чат\n {message}")
 
         return message
 
@@ -284,13 +283,6 @@ def get_server_stats():
 
 
 if __name__ == '__main__':
-    # tb_listener()
-    # vb_listener()
-        # search_path = input(
-        #             "\nпиши, ёптель: "
-        #         ).strip()
-        # print(replace(search_path))
-
     processes = {
         # 'p1': multiprocessing.Process(target=tb_listener, name='listener1'),
         'p2': multiprocessing.Process(target=vb_listener, name='listener2'),
