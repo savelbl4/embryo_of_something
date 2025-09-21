@@ -121,6 +121,13 @@ def handle_qwe(message):
     )
 
 
+@tb.message_handler(commands=['stats'])
+def handle_stats(message):
+    chatid = message.chat.id
+    print(f"отправка в чат {chatid}")
+    tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
+
+
 @tb.message_handler(func=lambda m: m.text == 'стикер')
 def handle_sticker(message):
     chatid = message.chat.id
@@ -139,6 +146,12 @@ def handle_gde(message):
     tb.send_message(chatid, lucky())
 
 
+@tb.message_handler(func=lambda m: m.text == 'статистика')
+def handle_gde(message):
+    chatid = message.chat.id
+    tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
+
+
 @tb.message_handler(func=lambda m: True)
 def answer(message):
     # pprint(dir(message.from_user))
@@ -151,8 +164,6 @@ def answer(message):
             tb.send_message(chatid, 'привет')
         if 'переведи' in message.text.lower():
             tb.send_message(chatid, replace(message.text.lower()))
-        if 'статистика' in message.text.lower():
-            tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
         if 'федя' in message.text.lower():
             if 'ты как' in message.text.lower():
                 tb.send_sticker(chatid, random.choice(stickers))
@@ -197,6 +208,13 @@ def send_workdays():
     if datetime.isoweekday(datetime.today()) <= 5:
         tb.send_message(chats[0], text=replace('звери умрут'))
         # tb.send_message(chats[2], text='11:11')
+
+
+def send_daily_stats():
+    try:
+        tb.send_message(chats[0], get_server_stats(), parse_mode='Markdown')
+    except Exception as e:
+        print(f"Ошибка отправки в чат {chats[0]}: {e}")
 
 
 def tb_listener():
@@ -263,39 +281,6 @@ def get_server_stats():
 
     except Exception as e:
         return f"❌ Ошибка получения статистики: {e}"
-
-
-# ДОБАВЛЯЕМ ОБРАБОТЧИК КОМАНДЫ /stats
-@tb.message_handler(commands=['stats'])
-def handle_stats(message):
-    """Обработчик команды /stats"""
-    chatid = message.chat.id
-    stats_message = get_server_stats()
-    print(f"отправка в чат {chatid}")
-    tb.send_message(chatid, stats_message, parse_mode='Markdown')
-
-
-# ДОБАВЛЯЕМ ОБРАБОТЧИК ДЛЯ КНОПКИ 'статистика'
-@tb.message_handler(func=lambda m: m.text == 'статистика')
-def handle_stats_button(message):
-    """Обработчик кнопки статистики"""
-    chatid = message.chat.id
-    stats_message = get_server_stats()
-    tb.send_message(chatid, stats_message, parse_mode='Markdown')
-
-
-# ДОБАВЛЯЕМ РАСПИСАНИЕ ДЛЯ ОТПРАВКИ СТАТИСТИКИ
-def send_daily_stats():
-    """Отправка ежедневной статистики"""
-    try:
-        stats_message = get_server_stats()
-        try:
-            print(f"отправка в чат {chats[0]}")
-            tb.send_message(chats[0], stats_message, parse_mode='Markdown')
-        except Exception as e:
-            print(f"Ошибка отправки в чат {chats[0]}: {e}")
-    except Exception as e:
-        print(f"Ошибка формирования статистики: {e}")
 
 
 if __name__ == '__main__':
