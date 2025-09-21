@@ -151,14 +151,13 @@ def answer(message):
             tb.send_message(chatid, 'привет')
         if 'переведи' in message.text.lower():
             tb.send_message(chatid, replace(message.text.lower()))
+        if 'статистика' in message.text.lower():
+            tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
         if 'федя' in message.text.lower():
             if 'ты как' in message.text.lower():
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
                 tb.send_message(chatid, im_here())
-            if 'статистика' in message.text.lower():
-                stats_message = get_server_stats()
-                tb.send_message(chatid, stats_message, parse_mode='Markdown')
 
 
 @tb.message_handler(content_types=['sticker'])
@@ -258,6 +257,8 @@ def get_server_stats():
         message += f"🖥️ *ОС*: {platform.system()} {platform.release()}\n"
         message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
 
+        print(f"отправка в чат\n {message}")
+
         return message
 
     except Exception as e:
@@ -270,7 +271,7 @@ def handle_stats(message):
     """Обработчик команды /stats"""
     chatid = message.chat.id
     stats_message = get_server_stats()
-    print(f"отправка в чат {chat_id}: {e}")
+    print(f"отправка в чат {chatid}")
     tb.send_message(chatid, stats_message, parse_mode='Markdown')
 
 
@@ -288,12 +289,11 @@ def send_daily_stats():
     """Отправка ежедневной статистики"""
     try:
         stats_message = get_server_stats()
-        for chat_id in chats:
-            try:
-                print(f"Ошибка отправки в чат {chat_id}: {e}")
-                tb.send_message(chat_id, stats_message, parse_mode='Markdown')
-            except Exception as e:
-                print(f"Ошибка отправки в чат {chat_id}: {e}")
+        try:
+            print(f"отправка в чат {chats[0]}")
+            tb.send_message(chats[0], stats_message, parse_mode='Markdown')
+        except Exception as e:
+            print(f"Ошибка отправки в чат {chats[0]}: {e}")
     except Exception as e:
         print(f"Ошибка формирования статистики: {e}")
 
