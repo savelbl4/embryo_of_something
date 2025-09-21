@@ -62,7 +62,6 @@ i = {
     'Х': '乂', 'Ц': '凵', 'Ч': '丩', 'Ш': '山', 'Щ': '山', 'Ъ': '乙', 'Ы': '辷', 'Ь': '乙', 'Э': '彐', 'Ю': '扣', 'Я': '牙'
 }
 
-
 # @bot.message_handler(bot.regex_filter(r'(?i)спасибо(.*?)'))
 # async def my_pleasure(event: SimpleBotEvent):
 #     await event.answer(message='Всегда рад помочь &#128521;')
@@ -72,9 +71,11 @@ i = {
 # async def greet(event: SimpleBotEvent):
 #     await event.answer('Привет!')
 
-
 @vb.message_handler(vb.regex_filter(r'.*'))
 async def greet(event: SimpleBotEvent):
+    if event.object.type != "message_new":
+        return False
+
     print(event.text.lower())
     if 'ты где' in event.text.lower():
         await event.answer(im_here())
@@ -82,6 +83,8 @@ async def greet(event: SimpleBotEvent):
         await event.answer(replace(event.text.lower()))
     if 'статистика' in event.text.lower():
         await event.answer(get_server_stats())
+
+    return True
 
 
 def lucky():
