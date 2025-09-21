@@ -1,10 +1,9 @@
 import telebot
 from telebot import types
-from vkwave.bots import SimpleLongPollBot, SimpleBotEvent
+from vkbottle import Bot
+from vkbottle.bot import Message
 from datetime import datetime
-from pprint import pprint
 import requests
-import json
 import re
 import multiprocessing
 import schedule
@@ -20,7 +19,7 @@ VK_GROUP = os.getenv('VK_GROUP')
 
 tb = telebot.TeleBot(TG_TOKEN)
 print(f"The Bot is online (id: {tb.get_me().id})...")
-vb = SimpleLongPollBot(tokens=VK_TOKEN, group_id=VK_GROUP)
+vb = Bot(token=VK_TOKEN)
 
 smile = [
     "😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "😘", "😗", "😙",
@@ -71,20 +70,19 @@ i = {
 # async def greet(event: SimpleBotEvent):
 #     await event.answer('Привет!')
 
-@vb.message_handler(vb.regex_filter(r'.*'))
-async def greet(event: SimpleBotEvent):
-    if event.object.type != "message_new":
-        return False
 
-    print(event.text.lower())
-    if 'ты где' in event.text.lower():
-        await event.answer(im_here())
-    if 'переведи' in event.text.lower():
-        await event.answer(replace(event.text.lower()))
-    if 'статистика' in event.text.lower():
-        await event.answer(get_server_stats())
-
-    return True
+@vb.on.message()
+async def greet(message: Message):
+    if not message.text:
+        return
+    text_lower = message.text.lower()
+    print(text_lower)
+    if 'ты где' in text_lower:
+        await message.answer(im_here())
+    if 'переведи' in text_lower:
+        await message.answer(replace(text_lower))
+    if 'статистика' in text_lower:
+        await message.answer(get_server_stats())
 
 
 def lucky():
