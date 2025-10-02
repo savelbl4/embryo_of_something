@@ -67,44 +67,36 @@ SwitchKeyboardLayout()
 ; Исправление символов для Apple Keyboard
 ;==========================================
 
-; клавиша винды меняется на контрол
-sc05b::Send("{sc01d}")
+; клавиша винды меняется на контрол (не работает)
+;sc05b::Send("{sc01d}")
 
 ; Клавиша SC056 ("§/±" перед "1") 
-sc056::CheckRus(">", "§")
-+sc056::CheckRus("<", "±")
+sc056::Send(IsRussian() ? ">" : "§")
++sc056::Send(IsRussian() ? "<" : "±")
 ; Клавиша SC056 ("Ё" после "Э") 
-sc02b::CheckRus("ё", "\")
-+sc02b::CheckRus("Ё", "|")
+sc02b::Send(IsRussian() ? "ё" : "\")
++sc02b::Send(IsRussian() ? "Ё" : "|")
 ; Клавиша SC029 ("]/["перед "я/z")
-sc029::CheckRus("]", "``")
-+sc029::CheckRus("[", "[")
+sc029::Send(IsRussian() ? "]" : "``")
++sc029::Send(IsRussian() ? "[" : "[")
 ; sc035 ("'/'/'?'" после "Ю")
 sc035::Send("/")
 +sc035::Send("?")
 
-+5::CheckRus(":", "%")
-+6::CheckRus(",", "^") 
-+7::CheckRus(".", "&")
-+8::CheckRus(";", "*")
++sc006::Send(IsRussian() ? ":" : "%")   ; 5
++sc007::Send(IsRussian() ? "," : "{^}") ; 6
++sc008::Send(IsRussian() ? "." : "&")   ; 7
++sc009::Send(IsRussian() ? ";" : "*")   ; 8
 
-CheckRus(rus, eng)
-{
-    try
-    {
-        activeHwnd := WinGetID("A")
-        threadId := DllCall("GetWindowThreadProcessId", "Ptr", activeHwnd, "Ptr", 0)
-        currentLayout := DllCall("GetKeyboardLayout", "UInt", threadId)
-        
-        ; 0x4190419 - Russian, 0x4090409 - English
-        if (currentLayout = 0x4190419)
-            Send(rus)
-        else
-            Send(eng)
+IsRussian() {
+    try {
+        hwnd := WinGetID("A")
+        threadId := DllCall("GetWindowThreadProcessId", "Ptr", hwnd, "Ptr", 0)
+        lid := DllCall("GetKeyboardLayout", "UInt", threadId)
+        return (lid & 0xFFFF) = 0x0419
     }
-    catch
-    {
-        Send(eng)  ; По умолчанию английский символ
+    catch {
+        return false
     }
 }
 
