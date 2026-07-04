@@ -19,6 +19,7 @@ jobs:
         export TG_TOKEN="${{ secrets.TG_TOKEN }}"
         export VK_TOKEN="${{ secrets.VK_TOKEN }}"
         export VK_GROUP="${{ secrets.VK_GROUP }}"
+        export PUBLIC_IP="${{ secrets.SSH_HOST }}"
         envsubst < docker-compose-template.yml > docker-compose.yml
 
     - name: Install SSH key
@@ -54,16 +55,30 @@ jobs:
           docker compose version
         EOF
 
-    - name: Copy project to remote host
+    - name: Sync files
+      id: sync
       run: |
-        rsync -az --exclude '.git' ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/
+        set -e
+
+        CHANGES=$(rsync -az --itemize-changes \
+        --exclude '.git' \
+        --exclude '.gitignore' \
+        --exclude '.github' \
+        ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/)
+
+        echo "$CHANGES"
+
+        if [ -n "$CHANGES" ]; then
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "changed=false" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Build and run Docker container on remote host
+      if: steps.sync.outputs.changed == 'true'
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ~/project
-          export PUBLIC_IP="$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')"
-          sed -i "s/PUBLIC_IP=.*/PUBLIC_IP=${PUBLIC_IP}/" docker-compose.yml
           docker compose down
           docker compose build
           docker compose up -d
