@@ -63,11 +63,10 @@ jobs:
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ~/project
           PUBLIC_IP="$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')"
-          echo "Detected PUBLIC_IP=$PUBLIC_IP"
           printf "PUBLIC_IP=%s\n" "$PUBLIC_IP" > .env
           docker compose down
           docker compose build
-          docker compose up -d --force-recreate
+          env -u PUBLIC_IP docker compose up -d --force-recreate
           docker compose exec bot env | grep PUBLIC_IP
         EOF
 
