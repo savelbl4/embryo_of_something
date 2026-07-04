@@ -67,6 +67,7 @@ jobs:
         ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/)
 
         echo "count of files:         $(($(echo $CHANGES | wc -l) - 1))"
+        echo $CHANGES
         
         REBUILD_CHANGES=$(echo "$CHANGES" | grep -vE '^\.' || true)
         
