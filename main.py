@@ -12,6 +12,7 @@ import random
 import os
 import psutil
 import platform
+import subprocess
 
 TG_TOKEN = os.getenv('TG_TOKEN')
 VK_TOKEN = os.getenv('VK_TOKEN')
@@ -145,16 +146,25 @@ def handle_gde(message):
 
 
 @tb.message_handler(func=lambda m: m.text == 'мне повезёт')
-def handle_gde(message):
+def handle_mne(message):
     chatid = message.chat.id
     tb.send_message(chatid, lucky())
 
 
 @tb.message_handler(func=lambda m: m.text == 'статистика')
-def handle_gde(message):
+def handle_stat(message):
     chatid = message.chat.id
     tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
 
+@tb.message_handler(commands=["test_ssh"])
+def handle_ssh(message):
+    chatid = message.chat.id
+
+    if str(chatid) not in chats:
+        return
+
+    tb.send_message(chatid, test_ssh())
+    # tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
 
 @tb.message_handler(func=lambda m: True)
 def answer(message):
@@ -280,6 +290,18 @@ def get_server_stats():
     except Exception as e:
         return f"❌ Ошибка получения статистики: {e}"
 
+def test_ssh():
+    result = subprocess.run(
+        ["ssh", "-o", "StrictHostKeyChecking=no", "botctl@host.docker.internal", "ls", "-la"],
+        capture_output=True,
+        text=True,
+        timeout=20,
+    )
+
+    if result.returncode == 0:
+        return f"✅\n{result.stdout.strip()}"
+
+    return f"❌\n{result.stderr.strip() or result.stdout.strip()}"
 
 if __name__ == '__main__':
     processes = {
