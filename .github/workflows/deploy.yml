@@ -67,8 +67,12 @@ jobs:
         ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/)
 
         echo "$CHANGES"
+        
+        REBUILD_CHANGES=$(echo "$CHANGES" | grep -E '^>f|^<f|^\*deleting' || true)
+        
+        echo "$REBUILD_CHANGES"
 
-        if [ -n "$CHANGES" ]; then
+        if [ -n "$REBUILD_CHANGES" ]; then
           echo "changed=true" >> "$GITHUB_OUTPUT"
         else
           echo "changed=false" >> "$GITHUB_OUTPUT"
