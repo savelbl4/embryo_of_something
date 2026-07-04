@@ -138,6 +138,14 @@ def handle_stats(message):
     tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
 
 
+@tb.message_handler(commands=["vpn"])
+def handle_vpn(message):
+    chatid = message.chat.id
+    if str(chatid) not in chats:
+        return
+    send_vpn_config(chatid)
+
+
 @tb.message_handler(func=lambda m: m.text == 'стикер')
 def handle_sticker(message):
     chatid = message.chat.id
@@ -308,39 +316,35 @@ def test_ssh():
 
     return f"❌\n{result.stderr.strip() or result.stdout.strip()}"
 
-@tb.message_handler(commands=["vpn"])
-def send_vpn_config(message):
-    chatid = message.chat.id
-
-    if str(chatid) not in chats:
-        return
-
+def send_vpn_config(chatid):
+    print(f"отправка vpn в чат {chatid}")
     try:
-        VLESS_LINK = Path("link.txt").read_text(encoding="utf-8").strip()
+        vless_link = Path("/app/link.txt").read_text(encoding="utf-8").strip()
 
-        if not VLESS_LINK.startswith("vless://"):
+        if not vless_link.startswith("vless://"):
             raise ValueError("Некорректная ссылка")
 
+        img = qrcode.make(vless_link)
+
+        bio = BytesIO()
+        bio.name = "vless_qr.png"
+        img.save(bio, "PNG")
+        bio.seek(0)
+
+        tb.send_photo(
+            chatid,
+            bio,
+            caption=(
+                "📱 <b>VPN-конфиг</b>\n\n"
+                "Отсканируйте QR-код или скопируйте ссылку:\n\n"
+                f"<code>{vless_link}</code>"
+            ),
+            parse_mode="HTML"
+        )
+
     except Exception as e:
-        print(f"Не удалось загрузить VLESS-конфиг: {e}")
-        VLESS_LINK = None
-
-    # 1. Отправляем кликабельную ссылку
-    tb.send_message(
-        chatid,
-        f"Конфиг:\n\n`{VLESS_LINK}`",
-        parse_mode="Markdown"
-    )
-
-    # 2. Генерируем QR
-    img = qrcode.make(VLESS_LINK)
-
-    bio = BytesIO()
-    bio.name = "vless_qr.png"
-    img.save(bio, "PNG")
-    bio.seek(0)
-
-    tb.send_photo(chatid, bio, caption="QR-код для подключения")
+        print(f"Не удалось отправить VLESS-конфиг: {e}")
+        tb.send_message(chatid, f"❌ Не удалось загрузить VPN-конфиг: {e}")
 
 
 if __name__ == '__main__':
