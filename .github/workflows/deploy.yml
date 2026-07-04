@@ -19,6 +19,7 @@ jobs:
         export TG_TOKEN="${{ secrets.TG_TOKEN }}"
         export VK_TOKEN="${{ secrets.VK_TOKEN }}"
         export VK_GROUP="${{ secrets.VK_GROUP }}"
+        export PUBLIC_IP="$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')"
         envsubst < docker-compose-template.yml > docker-compose.yml
 
     - name: Install SSH key
@@ -62,12 +63,9 @@ jobs:
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ~/project
-          PUBLIC_IP="$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')"
-          printf "PUBLIC_IP=%s\n" "$PUBLIC_IP" > .env
           docker compose down
           docker compose build
-          env -u PUBLIC_IP docker compose up -d --force-recreate
-          docker compose exec bot env | grep PUBLIC_IP
+          docker compose up -d
         EOF
 
     - name: Cleanup
