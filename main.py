@@ -16,6 +16,7 @@ import platform
 TG_TOKEN = os.getenv('TG_TOKEN')
 VK_TOKEN = os.getenv('VK_TOKEN')
 VK_GROUP = os.getenv('VK_GROUP')
+PUBLIC_IP = os.getenv('PUBLIC_IP')
 
 tb = telebot.TeleBot(TG_TOKEN)
 print(f"The Bot is online (id: {tb.get_me().id})...")
@@ -190,7 +191,7 @@ def handle_sticker(message):
 
 
 def im_here():
-    return f"я тут {os.getenv('PUBLIC_IP', 'unknown')}"
+    return f"я тут {PUBLIC_IP}"
 
 
 def send_weekends():
@@ -272,7 +273,7 @@ def get_server_stats():
         message += f"⏰ *Аптайм*: {str(uptime).split('.')[0]}\n"
         message += f"🖥️ *ОС*: {platform.system()} {platform.release()}\n"
         message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-        message += f"💌 *IP*: {os.getenv('PUBLIC_IP', 'unknown')}"
+        message += f"💌 *IP*: {PUBLIC_IP}"
 
         return message
 

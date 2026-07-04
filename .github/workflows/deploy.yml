@@ -62,9 +62,11 @@ jobs:
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ~/project
+          export PUBLIC_IP=$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')
           docker compose down
           docker compose build
-          PUBLIC_IP=$(hostname -I | awk '{print $1}') docker compose up -d
+          docker compose up -d --force-recreate
+          docker compose exec bot env | grep PUBLIC_IP
         EOF
 
     - name: Cleanup
