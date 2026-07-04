@@ -190,11 +190,7 @@ def handle_sticker(message):
 
 
 def im_here():
-    res = requests.request('get', 'https://vk.com/upload.php?act=myip')
-    ros = res.text
-    pattern = re.compile(r'\d+\.\d+\.\d+\.\d+')
-    ip_address = pattern.findall(ros)
-    return f'я тут {ip_address[0]}'
+    return f"я тут {os.getenv('PUBLIC_IP', 'unknown')}"
 
 
 def send_weekends():
@@ -239,7 +235,7 @@ def vb_listener():
 def sayer():
     # schedule.every(1).to(60).minutes.do(send_weekends)  # хз как это работает
     # schedule.every().day.at("11:11:11").do(send_workdays)
-    schedule.every().day.at("11:11:11").do(send_daily_stats)
+    schedule.every().day.at("11:11:10").do(send_daily_stats)
     while True:
         schedule.run_pending()
         time.sleep(1)
@@ -275,7 +271,8 @@ def get_server_stats():
         message += f"💿 *Диск*: {disk_used}GB / {disk_total}GB ({disk_percent}%)\n"
         message += f"⏰ *Аптайм*: {str(uptime).split('.')[0]}\n"
         message += f"🖥️ *ОС*: {platform.system()} {platform.release()}\n"
-        message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        message += f"⏱️ *Время*: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        message += f"💌 *IP*: {os.getenv('PUBLIC_IP', 'unknown')}"
 
         return message
 

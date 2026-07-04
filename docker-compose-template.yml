@@ -10,6 +10,7 @@ services:
       - TG_TOKEN=${TG_TOKEN}
       - VK_TOKEN=${VK_TOKEN}
       - VK_GROUP=${VK_GROUP}
+      - PUBLIC_IP=${PUBLIC_IP}
     volumes:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
