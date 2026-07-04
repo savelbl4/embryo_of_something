@@ -1,3 +1,5 @@
+import json
+
 import telebot
 from telebot import types
 from vkbottle import Bot
@@ -13,6 +15,9 @@ import os
 import psutil
 import platform
 import subprocess
+import qrcode
+from io import BytesIO
+from pathlib import Path
 
 TG_TOKEN = os.getenv('TG_TOKEN')
 VK_TOKEN = os.getenv('VK_TOKEN')
@@ -302,6 +307,41 @@ def test_ssh():
         return f"✅\n{result.stdout.strip()}"
 
     return f"❌\n{result.stderr.strip() or result.stdout.strip()}"
+
+@tb.message_handler(commands=["vpn"])
+def send_vpn_config(message):
+    chatid = message.chat.id
+
+    if str(chatid) not in chats:
+        return
+
+    try:
+        VLESS_LINK = Path("link.txt").read_text(encoding="utf-8").strip()
+
+        if not VLESS_LINK.startswith("vless://"):
+            raise ValueError("Некорректная ссылка")
+
+    except Exception as e:
+        print(f"Не удалось загрузить VLESS-конфиг: {e}")
+        VLESS_LINK = None
+
+    # 1. Отправляем кликабельную ссылку
+    tb.send_message(
+        chatid,
+        f"Конфиг:\n\n`{VLESS_LINK}`",
+        parse_mode="Markdown"
+    )
+
+    # 2. Генерируем QR
+    img = qrcode.make(VLESS_LINK)
+
+    bio = BytesIO()
+    bio.name = "vless_qr.png"
+    img.save(bio, "PNG")
+    bio.seek(0)
+
+    tb.send_photo(chatid, bio, caption="QR-код для подключения")
+
 
 if __name__ == '__main__':
     processes = {
