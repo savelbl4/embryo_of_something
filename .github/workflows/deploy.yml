@@ -63,7 +63,7 @@ jobs:
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           cd ~/project
           export PUBLIC_IP="$(ip -4 route get 1.1.1.1 | awk '{print $7; exit}')"
-          sed -i "s/PUBLIC_IP=/PUBLIC_IP=${PUBLIC_IP}/g" docker-compose.yml
+          sed -i "s/PUBLIC_IP=.*/PUBLIC_IP=${PUBLIC_IP}/" docker-compose.yml
           docker compose down
           docker compose build
           docker compose up -d
