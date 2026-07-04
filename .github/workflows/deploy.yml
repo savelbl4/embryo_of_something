@@ -66,17 +66,16 @@ jobs:
         --exclude '.github' \
         ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/project/)
 
-        echo "count of files:         $(($(echo "$CHANGES" | wc -l) - 1))"
-        echo $CHANGES
-        
+        echo "count of files:         $(echo "$CHANGES" | wc -l)"
+
         REBUILD_CHANGES=$(echo "$CHANGES" | grep -vE '^\.' || true)
         
-        echo "count of changed files: $(($(echo "$REBUILD_CHANGES" | wc -l) - 1))"
-        echo "$REBUILD_CHANGES"
-
         if [ -n "$REBUILD_CHANGES" ]; then
+          echo "count of changed files: $(echo "$REBUILD_CHANGES" | wc -l)"
+          echo "$REBUILD_CHANGES"
           echo "changed=true" >> "$GITHUB_OUTPUT"
         else
+          echo "count of changed files: $(($(echo "$REBUILD_CHANGES" | wc -l) - 1))"
           echo "changed=false" >> "$GITHUB_OUTPUT"
         fi
 
