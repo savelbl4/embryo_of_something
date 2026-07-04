@@ -15,4 +15,4 @@ services:
       - .:/app
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - /home/botctl/ssh/botctl_key:/root/.ssh/id_ed25519:ro
+      - /home/botctl/.ssh/botctl_key:/root/.ssh/id_ed25519:ro
