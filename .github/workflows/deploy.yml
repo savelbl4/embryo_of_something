@@ -68,7 +68,7 @@ jobs:
 
         echo "$CHANGES"
         
-        REBUILD_CHANGES=$(echo "$CHANGES" | grep -E '^>f|^<f|^\*deleting' || true)
+        REBUILD_CHANGES=$(echo "$CHANGES" | grep -vE '^\.' || true)
         
         echo "$REBUILD_CHANGES"
 
