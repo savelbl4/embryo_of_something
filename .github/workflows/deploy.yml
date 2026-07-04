@@ -60,7 +60,7 @@ jobs:
       run: |
         set -e
 
-        CHANGES=$(rsync -az --itemize-changes \
+        CHANGES=$(rsync -azc --itemize-changes \
         --exclude '.git' \
         --exclude '.gitignore' \
         --exclude '.github' \
