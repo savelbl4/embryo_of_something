@@ -1,19 +1,7 @@
-import sqlite3
 from datetime import datetime
-from pathlib import Path
 from app.db.users import init_db_users
 from app.db.stickers import init_db_stickers
-
-
-DB_PATH = Path("/storage/bot.db")
-
-
-def get_conn():
-    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
-
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
+from app.db.connection import get_conn
 
 def init_db():
     init_db_users()
