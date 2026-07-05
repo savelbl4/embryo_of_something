@@ -7,7 +7,12 @@ from app.utils.vpn import send_vpn_config
 from app.data import chats, stickers, letters, smile
 from app.config import TG_TOKEN
 from app.utils.text import replace, im_here, lucky
-from app.db import upsert_user, add_sticker_if_not_exists, get_random_sticker
+from app.db import (
+    upsert_user, add_sticker_if_not_exists, get_random_sticker,
+    upsert_identity,
+    generate_link_code,
+    get_linked_identity,
+)
 
 tb = telebot.TeleBot(TG_TOKEN)
 
@@ -73,6 +78,71 @@ def handle_vpn(message):
         caption=msg,
         parse_mode="HTML"
     )
+
+@tb.message_handler(commands=["link"])
+def handle_link(message):
+    chatid = message.chat.id
+    user = message.from_user
+
+    identity_id = upsert_identity(
+        platform="telegram",
+        platform_user_id=user.id,
+        platform_chat_id=chatid,
+        username=user.username,
+        display_name=" ".join(
+            part for part in [user.first_name, user.last_name] if part
+        ),
+    )
+
+    linked_vk = get_linked_identity(identity_id, "vk")
+
+    if linked_vk:
+        tb.send_message(chatid, "Telegram уже привязан к VK.")
+        return
+
+    code = generate_link_code(identity_id)
+
+    tb.send_message(
+        chatid,
+        (
+            "Код для привязки VK:\n\n"
+            f"`{code}`\n\n"
+            "Теперь отправь VK-боту:\n"
+            f"`/link {code}`\n\n"
+            "Код действует 10 минут."
+        ),
+        parse_mode="Markdown",
+    )
+
+@tb.message_handler(commands=["whoami"])
+def handle_whoami(message):
+    user = message.from_user
+
+    identity_id = upsert_identity(
+        platform="telegram",
+        platform_user_id=user.id,
+        platform_chat_id=message.chat.id,
+        username=user.username,
+        display_name=" ".join(
+            part for part in [user.first_name, user.last_name] if part
+        ),
+    )
+
+    linked_vk = get_linked_identity(identity_id, "vk")
+
+    text = (
+        f"Telegram identity_id: {identity_id}\n"
+        f"telegram_user_id: {user.id}\n"
+        f"telegram_chat_id: {message.chat.id}\n"
+        f"username: @{user.username}\n"
+    )
+
+    if linked_vk:
+        text += f"\nПривязан VK identity_id: {linked_vk['id']}"
+    else:
+        text += "\nVK пока не привязан."
+
+    tb.send_message(message.chat.id, text)
 
 @tb.message_handler(commands=["test_ssh"])
 def handle_ssh(message):
