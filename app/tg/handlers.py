@@ -5,9 +5,9 @@ from app.utils.stats import get_server_stats
 from app.utils.ssh import test_ssh
 from app.utils.vpn import send_vpn_config
 from app.data import chats, stickers, letters, smile
-from app.config import TG_TOKEN, VK_TOKEN, VK_GROUP, PUBLIC_IP
+from app.config import TG_TOKEN
 from app.utils.text import replace, im_here, lucky
-from app.db import upsert_user
+from app.db import upsert_user, add_sticker_if_not_exists, get_random_sticker
 
 tb = telebot.TeleBot(TG_TOKEN)
 
@@ -77,7 +77,7 @@ def handle_vpn(message):
 @tb.message_handler(func=lambda m: m.text == 'стикер')
 def handle_sticker(message):
     chatid = message.chat.id
-    tb.send_sticker(chatid, random.choice(stickers))
+    tb.send_sticker(chatid, get_random_sticker())
 
 
 @tb.message_handler(func=lambda m: m.text == 'где')
@@ -126,22 +126,20 @@ def answer(message):
 
 @tb.message_handler(content_types=['sticker'])
 def handle_sticker(message):
-    from pprint import pprint
     chatid = message.chat.id
     sticker = message.sticker
-    stickerid1 = sticker.file_id
-    # json_ = message.json
-    # stickerid2 = json_.get('sticker').get('file_id')
+
     print(f"Sticker from {chatid}")
-
     print(sticker.file_id)
-    print(sticker.emoji)
-    print(sticker.set_name)
-    print(sticker.file_unique_id)
 
-    pprint(message.json)
-    if stickerid1 not in stickers:
-        stickers.append(stickerid1)
-    # print(stickerid2)
-    # Здесь можешь отвечать на стикер, если хочешь
+    is_new = add_sticker_if_not_exists(sticker)
+
+    if is_new:
+        print("New sticker added to DB")
+    else:
+        print("Sticker already exists")
+
     tb.send_message(chatid, lucky())
+
+    # from pprint import pprint
+    # pprint(message.json)
