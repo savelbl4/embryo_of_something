@@ -133,6 +133,11 @@ def handle_sticker(message):
     # stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
     print(stickerid1)
+
+    print(sticker.file_id)
+    print(sticker.emoji)
+    print(sticker.set_name)
+    print(sticker.file_unique_id)
     if stickerid1 not in stickers:
         stickers.append(stickerid1)
     # print(stickerid2)
