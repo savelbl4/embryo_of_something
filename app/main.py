@@ -1,12 +1,13 @@
 import multiprocessing
 import time
 from app.scheduler import sayer
-from app.tg import tb, tb_listener
+from app.tg import tb_listener
 from app.vk import vb_listener
+from db import init_db
 
 
 if __name__ == '__main__':
-    print(f"The Bot is online (id: {tb.get_me().id})...")
+    init_db()
     processes = {
         # 'p1': multiprocessing.Process(target=tb_listener, name='listener1'),
         'p2': multiprocessing.Process(target=vb_listener, name='listener2'),

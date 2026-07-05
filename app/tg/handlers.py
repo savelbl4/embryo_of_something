@@ -7,6 +7,7 @@ from app.utils.vpn import send_vpn_config
 from app.data import chats, stickers, letters, smile
 from app.config import TG_TOKEN, VK_TOKEN, VK_GROUP, PUBLIC_IP
 from app.utils.text import replace, im_here, lucky
+from app.db import upsert_user
 
 tb = telebot.TeleBot(TG_TOKEN)
 
@@ -21,6 +22,7 @@ def get_custom_keyboard():
 
 def tb_listener():
     try:
+        print(f"The Bot is online (id: {tb.get_me().id})...")
         tb.infinity_polling(
             skip_pending=True,
             none_stop=True,
@@ -30,13 +32,14 @@ def tb_listener():
 
 
 @tb.message_handler(commands=['start'])
-def handle_qwe(message):
+def handle_start(message):
     chatid = message.chat.id
     # tb.send_message(
     #     chatid,
     #     "Выберите действие:",
     #     reply_markup=get_custom_keyboard()
     # )
+    upsert_user(message)
     tb.send_sticker(
         chatid,
         stickers[0],

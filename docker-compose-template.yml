@@ -13,6 +13,7 @@ services:
       - PUBLIC_IP=${PUBLIC_IP}
     volumes:
       - .:/app/storage
+      - .:/storage
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /home/botctl/.ssh/botctl_key:/root/.ssh/id_ed25519:ro
