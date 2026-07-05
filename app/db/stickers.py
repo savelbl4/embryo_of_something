@@ -1,5 +1,5 @@
 from datetime import datetime
-from app.db import get_conn
+from app.db.main import get_conn
 
 def init_db_stickers():
     with get_conn() as conn:

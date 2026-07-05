@@ -1,7 +1,8 @@
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-from app.db import init_db_users, init_db_stickers
+from app.db.users import init_db_users
+from app.db.stickers import init_db_stickers
 
 
 DB_PATH = Path("/storage/bot.db")
