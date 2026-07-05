@@ -21,6 +21,16 @@ def upsert_user(message):
     now = datetime.now().isoformat(timespec="seconds")
 
     with get_conn() as conn:
+        cursor = conn.execute(
+            "SELECT id FROM users WHERE tg_user_id = ?",
+            (message.from_user.id,)
+        )
+
+        existing = cursor.fetchone()
+
+        if existing:
+            return False
+
         conn.execute("""
             INSERT INTO users (
                 tg_chat_id,

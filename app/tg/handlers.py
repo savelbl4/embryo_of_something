@@ -34,17 +34,18 @@ def tb_listener():
 @tb.message_handler(commands=['start'])
 def handle_start(message):
     chatid = message.chat.id
-    # tb.send_message(
-    #     chatid,
-    #     "Выберите действие:",
-    #     reply_markup=get_custom_keyboard()
-    # )
-    upsert_user(message)
-    tb.send_sticker(
-        chatid,
-        stickers[0],
-        reply_markup=get_custom_keyboard()
-    )
+    if not upsert_user(message):
+        tb.send_sticker(
+            chatid,
+            stickers[0],
+            reply_markup=get_custom_keyboard()
+        )
+    else:
+        tb.send_message(
+            chatid,
+            "а я тебя знаю",
+            reply_markup = get_custom_keyboard()
+        )
 
 
 @tb.message_handler(commands=['stats'])
@@ -122,6 +123,9 @@ def answer(message):
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
                 tb.send_message(chatid, im_here())
+    else:
+        from pprint import pprint
+        pprint(message.json)
 
 
 @tb.message_handler(content_types=['sticker'])
