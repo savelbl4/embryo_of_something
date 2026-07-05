@@ -1,11 +1,13 @@
 from datetime import datetime
 from app.db.users import init_db_users
 from app.db.stickers import init_db_stickers
+from app.db.bridge import init_db_bridge
 from app.db.connection import get_conn
 
 def init_db():
     init_db_users()
     init_db_stickers()
+    init_db_bridge()
 
 
 def set_user_vless_link(chat_id, vless_link):

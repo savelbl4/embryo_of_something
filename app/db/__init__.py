@@ -8,3 +8,10 @@ from app.db.stickers import (
     add_sticker_if_not_exists,
     get_random_sticker
 )
+
+from app.db.bridge import (
+    upsert_identity,
+    generate_link_code,
+    link_by_code,
+    get_linked_identity,
+)
