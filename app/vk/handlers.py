@@ -25,14 +25,32 @@ def vb_listener():
     except:
         print("Lost connection!")
 
+async def get_vk_user_info(user_id: int):
+    users = await vb.api.users.get(
+        user_ids=[user_id],
+        fields=["domain", "screen_name"]
+    )
+
+    if not users:
+        return None
+
+    user = users[0]
+
+    return {
+        "display_name": f"{user.first_name} {user.last_name}",
+        "username": getattr(user, "domain", None) or getattr(user, "screen_name", None),
+    }
+
 @vb.on.message(text=["/link <code>", "!link <code>"])
 async def link_vk(message: Message, code: str):
+    info = await get_vk_user_info(message.from_id)
+
     identity_id = upsert_identity(
         platform="vk",
         platform_user_id=message.from_id,
         platform_chat_id=message.peer_id,
-        username=None,
-        display_name=None,
+        username=info["username"] if info else None,
+        display_name=info["display_name"] if info else None,
     )
 
     if link_by_code(identity_id, code):
