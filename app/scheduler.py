@@ -5,7 +5,7 @@ import random
 from app.utils.text import replace
 from app.data import chats, stickers
 from app.utils.stats import get_server_stats
-from tg import tb
+from app.tg import tb
 
 
 
