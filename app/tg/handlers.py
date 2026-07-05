@@ -126,18 +126,20 @@ def answer(message):
 
 @tb.message_handler(content_types=['sticker'])
 def handle_sticker(message):
+    from pprint import pprint
     chatid = message.chat.id
     sticker = message.sticker
     stickerid1 = sticker.file_id
     # json_ = message.json
     # stickerid2 = json_.get('sticker').get('file_id')
     print(f"Sticker from {chatid}")
-    print(stickerid1)
 
     print(sticker.file_id)
     print(sticker.emoji)
     print(sticker.set_name)
     print(sticker.file_unique_id)
+
+    pprint(message.json)
     if stickerid1 not in stickers:
         stickers.append(stickerid1)
     # print(stickerid2)
