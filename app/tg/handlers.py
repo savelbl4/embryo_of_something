@@ -34,7 +34,7 @@ def tb_listener():
 @tb.message_handler(commands=['start'])
 def handle_start(message):
     chatid = message.chat.id
-    if not upsert_user(message):
+    if upsert_user(message):
         tb.send_sticker(
             chatid,
             stickers[0],
