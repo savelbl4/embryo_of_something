@@ -74,30 +74,6 @@ def handle_vpn(message):
         parse_mode="HTML"
     )
 
-
-@tb.message_handler(func=lambda m: m.text == 'стикер')
-def handle_sticker(message):
-    chatid = message.chat.id
-    tb.send_sticker(chatid, get_random_sticker())
-
-
-@tb.message_handler(func=lambda m: m.text == 'где')
-def handle_gde(message):
-    chatid = message.chat.id
-    tb.send_message(chatid, im_here())
-
-
-@tb.message_handler(func=lambda m: m.text == 'мне повезёт')
-def handle_mne(message):
-    chatid = message.chat.id
-    tb.send_message(chatid, lucky())
-
-
-@tb.message_handler(func=lambda m: m.text == 'статистика')
-def handle_stat(message):
-    chatid = message.chat.id
-    tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
-
 @tb.message_handler(commands=["test_ssh"])
 def handle_ssh(message):
     chatid = message.chat.id
@@ -106,28 +82,6 @@ def handle_ssh(message):
         return
 
     tb.send_message(chatid, test_ssh())
-
-@tb.message_handler(func=lambda m: True)
-def answer(message):
-    chatid = message.chat.id
-    # для дебага
-    # print(chatid)
-    # print(message)
-    from pprint import pprint
-    pprint(message.json)
-    if message.content_type == 'text' and str(chatid) in chats:
-        if 'привет бот' in message.text:
-            tb.send_message(chatid, 'привет')
-        if 'переведи' in message.text.lower():
-            tb.send_message(chatid, replace(message.text.lower()))
-        if 'федя' in message.text.lower():
-            if 'ты как' in message.text.lower():
-                tb.send_sticker(chatid, random.choice(stickers))
-            if 'ты где' in message.text.lower():
-                tb.send_message(chatid, im_here())
-    # else:
-    #     from pprint import pprint
-    #     pprint(message.json)
 
 
 @tb.message_handler(content_types=['sticker'])
@@ -149,3 +103,58 @@ def handle_sticker(message):
 
     # from pprint import pprint
     # pprint(message.json)
+
+
+@tb.message_handler(func=lambda m: m.text == 'стикер')
+def handle_button_sticker(message):
+    chatid = message.chat.id
+    tb.send_sticker(chatid, get_random_sticker())
+
+
+@tb.message_handler(func=lambda m: m.text == 'где')
+def handle_button_gde(message):
+    chatid = message.chat.id
+    tb.send_message(chatid, im_here())
+
+
+@tb.message_handler(func=lambda m: m.text == 'мне повезёт')
+def handle_button_mne(message):
+    chatid = message.chat.id
+    tb.send_message(chatid, lucky())
+
+
+@tb.message_handler(func=lambda m: m.text == 'статистика')
+def handle_button_stat(message):
+    chatid = message.chat.id
+    tb.send_message(chatid, get_server_stats(), parse_mode='Markdown')
+
+@tb.message_handler(content_types=[
+    'text',
+    'sticker',
+    'animation',
+    'photo',
+    'video',
+    'document',
+    'voice',
+    'audio'
+])
+def handle_all_answer(message):
+    chatid = message.chat.id
+    # для дебага
+    # print(chatid)
+    # print(message)
+    from pprint import pprint
+    pprint(message.json)
+    if message.content_type == 'text' and str(chatid) in chats:
+        if 'привет бот' in message.text:
+            tb.send_message(chatid, 'привет')
+        if 'переведи' in message.text.lower():
+            tb.send_message(chatid, replace(message.text.lower()))
+        if 'федя' in message.text.lower():
+            if 'ты как' in message.text.lower():
+                tb.send_sticker(chatid, random.choice(stickers))
+            if 'ты где' in message.text.lower():
+                tb.send_message(chatid, im_here())
+    # else:
+    #     from pprint import pprint
+    #     pprint(message.json)
