@@ -1,8 +1,8 @@
 import multiprocessing
 import time
 from app.scheduler import sayer
-from tg import tb, tb_listener
-from vk import vb_listener
+from app.tg import tb, tb_listener
+from app.vk import vb_listener
 
 
 if __name__ == '__main__':
