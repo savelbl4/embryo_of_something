@@ -113,6 +113,8 @@ def answer(message):
     # для дебага
     # print(chatid)
     # print(message)
+    from pprint import pprint
+    pprint(message.json)
     if message.content_type == 'text' and str(chatid) in chats:
         if 'привет бот' in message.text:
             tb.send_message(chatid, 'привет')
@@ -123,9 +125,9 @@ def answer(message):
                 tb.send_sticker(chatid, random.choice(stickers))
             if 'ты где' in message.text.lower():
                 tb.send_message(chatid, im_here())
-    else:
-        from pprint import pprint
-        pprint(message.json)
+    # else:
+    #     from pprint import pprint
+    #     pprint(message.json)
 
 
 @tb.message_handler(content_types=['sticker'])
