@@ -3,7 +3,7 @@ import time
 from app.scheduler import sayer
 from app.tg import tb_listener
 from app.vk import vb_listener
-from db import init_db
+from app.db import init_db
 
 
 if __name__ == '__main__':
